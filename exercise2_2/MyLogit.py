@@ -1,12 +1,7 @@
-###### THL311 - HW2 ##############
-## Complete the missing code to implement Logistic Regression
-## First make sure you have installed necessary modules
-## pip install numpy matplotlib scipy
-
-
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import minimize
+
 
 def plotData(X, y):
     pos = y == 1
@@ -14,25 +9,25 @@ def plotData(X, y):
     plt.scatter(X[pos, 0], X[pos, 1], marker='+', c='k', label='Admitted')
     plt.scatter(X[neg, 0], X[neg, 1], marker='o', c='y', label='Not admitted')
 
+
 def sigmoid(z):
-    ### ADD YOUR CODE HERE
-    
-    sigmoid_function = 
+    sigmoid_function = 1 / (1 + np.exp(-z))
     return sigmoid_function
+
 
 # Calculate the cost function
 def costFunction(theta, X, y):
-    ### ADD YOUR CODE HERE
-    
-    J = 
+    y_exp = sigmoid(np.dot(X, theta))
+    J = (-1 / len(y)) * (np.dot(y.T, np.log(y_exp)) + np.dot((1 - y).T, np.log(1 - y_exp)))
     return J
+
 
 # Calculate the gradient of the cost function
 def gradient(theta, X, y):
-    ### ADD YOUR CODE HERE
-
-    grad = 
+    y_exp = sigmoid(np.dot(X, theta))
+    grad = (1 / len(y)) * np.dot(X.T, (y_exp - y))
     return grad
+
 
 def plotDecisionBoundary(theta, X, y):
     plotData(X[:, 1:3], y)
@@ -43,12 +38,12 @@ def plotDecisionBoundary(theta, X, y):
     plt.ylabel('Exam 2 score')
     plt.legend()
 
+
 # Class Prediction
 def predict(theta, X):
-    ### ADD YOUR CODE HERE
+    pred_class = sigmoid(np.dot(X, theta)) >= 0.5
+    return pred_class
 
-    class = 
-    return class
 
 # Initialization
 np.set_printoptions(suppress=True)
@@ -91,13 +86,11 @@ input('\nProgram paused. Press enter to continue.\n')
 
 # ============== Part 4: Predict and Accuracies ==============
 # Check the result for a student with marks 45 and 85.
-### ADD YOUR CODE HERE
-
-prob = 
+scores = np.array([1, 45, 85])  # intercept term 1
+prob = sigmoid(np.dot(scores, theta))
 print('For a student with scores 45 and 85, we predict an admission probability of', prob)
+
+# Calculate training accuracy
 p = predict(theta, X)
-
-### ADD YOUR CODE HERE
-train_accuracy = 
-print('Train Accuracy:', train_accuracy)
-
+train_accuracy = np.mean(p == y) * 100
+print(f'Train Accuracy: {train_accuracy}%')

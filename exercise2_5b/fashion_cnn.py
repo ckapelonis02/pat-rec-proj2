@@ -3,14 +3,13 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 # TensorFlow and tf.keras
 import tensorflow as tf
 from tensorflow import keras
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
+# from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 # Helper libraries
 import numpy as np
 import matplotlib.pyplot as plt
 
 from plots import plot_some_data, plot_some_predictions
-
 
 fashion_mnist = keras.datasets.fashion_mnist
 
@@ -19,19 +18,25 @@ fashion_mnist = keras.datasets.fashion_mnist
 class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
                'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
 
-# Scale these values to a range of 0 to 1 before feeding them to the neural network model. 
+# Scale these values to a range of 0 to 1 before feeding them to the neural network model.
+train_images = train_images / 255.0
+test_images = test_images / 255.0
 
-train_images =  # normalize
-test_images = # normalize
-
-train_images_reshaped = # reshape to mum_train_images X height X width X channels, where channels = 1
-test_images_reshaped = # reshape
-
+# Reshape to add a channel dimension (required by convolutional layers)
+train_images_reshaped = train_images.reshape(train_images.shape[0], 28, 28, 1)
+test_images_reshaped = test_images.reshape(test_images.shape[0], 28, 28, 1)
 
 # Build the model
 # Building the neural network requires configuring the layers of the model, then compiling the model.
-
-model = # fill the model
+model = keras.Sequential([
+    keras.layers.Conv2D(32, (3, 3), padding='same', activation='relu', input_shape=(28, 28, 1)),
+    keras.layers.MaxPooling2D((2, 2)),
+    keras.layers.Conv2D(64, (3, 3), padding='same', activation='relu'),
+    keras.layers.MaxPooling2D((2, 2)),
+    keras.layers.Flatten(),
+    keras.layers.Dense(128, activation='relu'),
+    keras.layers.Dense(10)
+])
 
 model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
@@ -62,8 +67,3 @@ probability_model = tf.keras.Sequential([model,
 predictions = probability_model.predict(test_images_reshaped)
 
 plot_some_predictions(test_images, test_labels, predictions, class_names, num_rows=5, num_cols=3)
-
-
-
-
-

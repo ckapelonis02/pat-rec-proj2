@@ -29,18 +29,53 @@ test_images_reshaped = test_images.reshape(test_images.shape[0], 28, 28, 1)
 # Build the model
 # Building the neural network requires configuring the layers of the model, then compiling the model.
 model = keras.Sequential([
-    keras.layers.Conv2D(32, (3, 3), padding='same', activation='relu', input_shape=(28, 28, 1)),
-    keras.layers.MaxPooling2D((2, 2)),
-    keras.layers.Conv2D(64, (3, 3), padding='same', activation='relu'),
-    keras.layers.MaxPooling2D((2, 2)),
+    keras.layers.Conv2D(32, (3, 3), padding='same', activation=None, input_shape=(28, 28, 1)),
+    keras.layers.BatchNormalization(),
+    keras.layers.ReLU(),
+
+    keras.layers.Conv2D(32, (3, 3), padding='same', activation=None, input_shape=(28, 28, 1)),
+    keras.layers.BatchNormalization(),
+    keras.layers.ReLU(),
+
+    keras.layers.MaxPooling2D((2, 2), padding='valid', input_shape=(28, 28, 1)),
+    keras.layers.Dropout(0.2),
+
+    keras.layers.Conv2D(64, (3, 3), padding='same', activation=None, input_shape=(14, 14, 32)),
+    keras.layers.BatchNormalization(),
+    keras.layers.ReLU(),
+
+    keras.layers.Conv2D(64, (3, 3), padding='same', activation=None, input_shape=(14, 14, 64)),
+    keras.layers.BatchNormalization(),
+    keras.layers.ReLU(),
+
+    keras.layers.MaxPooling2D((2, 2), padding='valid', input_shape=(14, 14, 64)),
+    keras.layers.Dropout(0.3),
+
+    keras.layers.Conv2D(128, (3, 3), padding='same', activation=None, input_shape=(7, 7, 64)),
+    keras.layers.BatchNormalization(),
+    keras.layers.ReLU(),
+
+    keras.layers.MaxPooling2D((2, 2), padding='valid', input_shape=(7, 7, 128)),
+    keras.layers.Dropout(0.4),
+
     keras.layers.Flatten(),
-    keras.layers.Dense(128, activation='relu'),
-    keras.layers.Dense(10)
+
+    keras.layers.Dense(units=3*3*128, activation=None),
+    keras.layers.BatchNormalization(),
+    keras.layers.ReLU(),
+    keras.layers.Dropout(0.5),
+
+    keras.layers.Dense(units=200, activation=None),
+    keras.layers.ReLU(),
+
+    keras.layers.Dense(units=len(class_names)),
 ])
+
 
 model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
+
 
 #Train the model
 # Training the neural network model requires the following steps:
@@ -50,11 +85,14 @@ model.compile(optimizer='adam',
 #   3. You ask the model to make predictions about a test set—in this example, the test_images array.
 #   4. Verify that the predictions match the labels from the test_labels array.
 
-model.fit(train_images_reshaped, train_labels, epochs=50, validation_data=(test_images_reshaped, test_labels))
+model.fit(train_images_reshaped, train_labels, epochs=50, validation_data=(test_images_reshaped, test_labels), batch_size=1024)
 
-# Evaluate accuracy
-test_loss, test_acc = model.evaluate(test_images_reshaped,  test_labels, verbose=2)
+# Evaluate train accuracy
+train_loss, train_acc = model.evaluate(train_images_reshaped, train_labels, verbose=2)
+print('\nTrain accuracy:', train_acc)
 
+# Evaluate test accuracy
+test_loss, test_acc = model.evaluate(test_images_reshaped, test_labels, verbose=2)
 print('\nTest accuracy:', test_acc)
 
 # Make predictions

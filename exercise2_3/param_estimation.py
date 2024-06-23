@@ -55,3 +55,4 @@ print("Question d:")
 print("Mean vector (μ) for 3D:", np.mean(class_2, axis=0))
 print("Diagonal covariance matrix (Σ) for 3D:\n", np.diag(np.var(class_2, axis=0, ddof=0)))
 print("\n\n\n")
+

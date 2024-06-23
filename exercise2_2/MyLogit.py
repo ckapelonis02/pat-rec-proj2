@@ -11,7 +11,7 @@ def plotData(X, y):
 
 
 def sigmoid(z):
-    sigmoid_function = 1 / (1 + np.exp(-z))
+    sigmoid_function = 1 / (1 + 2*np.exp(-z))
     return sigmoid_function
 
 

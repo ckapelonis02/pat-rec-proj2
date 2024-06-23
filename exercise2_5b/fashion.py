@@ -23,14 +23,17 @@ test_images = test_images / 255.0
 
 plot_some_data(train_images, train_labels, class_names)
 
-# Build the model of dense neural network
-model = keras.Sequential([
-    keras.layers.Flatten(input_shape=(28, 28)),
-    keras.layers.Dense(128, activation='relu'),
-    keras.layers.Dense(10)
-])
+# Dictionary to store accuracy for each optimizer
+accuracy_results = {}
+
 opt_list = ['adam', 'sgd', 'rmsprop', 'nadam', 'adamax', 'ftrl']
 for opt in opt_list:
+    model = keras.Sequential([
+        keras.layers.Flatten(input_shape=(28, 28)),
+        keras.layers.Dense(128, activation='relu'),
+        keras.layers.Dense(10)
+    ])
+
     model.compile(optimizer=opt,
                   loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
                   metrics=['accuracy'])
@@ -43,16 +46,16 @@ for opt in opt_list:
     #   3. You ask the model to make predictions about a test set—in this example, the test_images array.
     #   4. Verify that the predictions match the labels from the test_labels array.
 
-    model.fit(train_images, train_labels, epochs=50, validation_data=(test_images, test_labels))
+    model.fit(train_images, train_labels, epochs=400, validation_data=(test_images, test_labels), batch_size=1024)
 
     # Evaluate train accuracy
     train_loss, train_acc = model.evaluate(train_images, train_labels, verbose=2)
-    print('\nTrain accuracy:', train_acc, "for optimizer", opt)
 
     # Evaluate test accuracy
-    test_loss, test_acc = model.evaluate(test_images,  test_labels, verbose=2)
+    test_loss, test_acc = model.evaluate(test_images, test_labels, verbose=2)
 
-    print('\nTest accuracy:', test_acc, "for optimizer", opt)
+
+    accuracy_results[opt] = {'train_accuracy': train_acc, 'test_accuracy': test_acc}
 
     # Make predictions
     # With the model trained, you can use it to make predictions about some images.
@@ -64,3 +67,9 @@ for opt in opt_list:
     predictions = probability_model.predict(test_images)
 
     plot_some_predictions(test_images, test_labels, predictions, class_names, num_rows=5, num_cols=3)
+
+# Print the results
+for opt in opt_list:
+    print(f"Optimizer: {opt}")
+    print(f"Train Accuracy: {accuracy_results[opt]['train_accuracy']}")
+    print(f"Test Accuracy: {accuracy_results[opt]['test_accuracy']}\n")

@@ -15,6 +15,19 @@ class_4 = np.array(
     [[-2, -8.4], [-8.9, 0.2], [-4.2, -7.7], [-8.5, -3.2], [-6.7, -4.0], [-0.5, -9.2], [-5.3, -6.7], [-8.7, -6.4],
      [-7.1, -9.7], [-8.0, -6.3]])
 
+# Question a
+plt.figure(figsize=(10, 8))
+plt.scatter(class_1[:, 0], class_1[:, 1], c='red', label='class 1')
+plt.scatter(class_2[:, 0], class_2[:, 1], c='blue', label='class 2')
+plt.scatter(class_3[:, 0], class_3[:, 1], c='green', label='class 3')
+plt.scatter(class_4[:, 0], class_4[:, 1], c='purple', label='class 4')
+plt.title('Scatter Plot for Different Classes')
+plt.xlabel('x1')
+plt.ylabel('x2')
+plt.legend()
+plt.grid(True)
+plt.show()
+
 
 def perceptron(X, y, max_iter=1000):
     w = np.zeros(X.shape[1])  # initially zero vector
@@ -37,21 +50,7 @@ def plot_decision_boundary(w, b, ax):
     y_values = -(w[0] * x_values + b) / w[1]
     ax.plot(x_values, y_values, 'k--')
 
-
-# Question a
-plt.figure(figsize=(10, 8))
-plt.scatter(class_1[:, 0], class_1[:, 1], c='red', label='class 1')
-plt.scatter(class_2[:, 0], class_2[:, 1], c='blue', label='class 2')
-plt.scatter(class_3[:, 0], class_3[:, 1], c='green', label='class 3')
-plt.scatter(class_4[:, 0], class_4[:, 1], c='purple', label='class 4')
-plt.title('Scatter Plot for Different Classes')
-plt.xlabel('x1')
-plt.ylabel('x2')
-plt.legend()
-plt.grid(True)
-plt.show()
-
-# Question b
+# Question b, c
 fig, axs = plt.subplots(1, 3, figsize=(15, 5))
 
 # class_1 vs class_2

@@ -1,7 +1,10 @@
 # Project: Statistical Modeling and Pattern Recognition
 
 This project is the second part of the *Statistical Modeling and Pattern Recognition* course.
-It is implemented in Python and covers the fundamentals the subject:
+
+Part of the code was given by our professor Diakoloukas Vasilis. 
+
+It is implemented in Python and covers the fundamentals of the subject:
 
 1. Perceptron Algorithm
 2. Logistic Regression: Gradient
